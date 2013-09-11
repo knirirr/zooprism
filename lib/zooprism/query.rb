@@ -5,6 +5,7 @@ class ZPQuery
 
   # http://deveiate.org/code/pg/PGconn.html
   def initialize
+    ZPConfig.configure
     @dbh = ZPConfig.prepare
   end
 
@@ -19,7 +20,8 @@ class ZPQuery
   end
 
   def test_insert
-    # users should only have read permission anyway
+    # users should only have read permission anyway, although it is not clear
+    # how to ensure this with Redshift
     begin
       res = @dbh.exec("insert into fruits values('banana','yellow')")
       res = @dbh.exec("insert into fruits values('orange','green')")

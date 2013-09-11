@@ -1,69 +1,38 @@
 # this should be set up in config/initializers 
 # for the rails application
 module ZPConfig
-  @config = {
-              :access_key_id => "YOUR_ACCESS_KEY_ID",
-              :secret_access_key => "YOUR_SECRET_ACCESS_KEY",
-              :host => "HOST",
-              :port => 5439,
-              :dbname => "DBNAME",
-              :user => "USER",
-              :password => "SECRET"
-            }
 
-  @valid_config_keys = @config.keys
-
-  def self.config
-    @config
-  end
-
-  # Configure through hash
-  def self.configure(opts = {})
-    opts.each {|k,v| @config[k.to_sym] = v if @valid_config_keys.include? k.to_sym}
-  end
+  @default_file = "#{ENV['HOME']}/.aws/config"
+  @config = nil
 
   # Configure through yaml file
-  def self.configure_with(path_to_yaml_file)
+  def self.configure
     begin
-      config = YAML::load(IO.read(path_to_yaml_file))
+      @config = IniFile.load(@default_file)
     rescue Errno::ENOENT
-      #log(:warning, "YAML configuration file couldn't be found. Using defaults."); return
-      puts "YAML configuration file couldn't be found. Using defaults."
-    rescue Psych::SyntaxError
-      #log(:warning, "YAML configuration file contains invalid syntax. Using defaults."); return
-      puts "YAML configuration file contains invalid syntax. Using defaults."
+      puts "File #{@default_file} could not be found."
+    rescue IniFile::Error
+      puts "File #{@default_file} could not be parsed."
     end
-
-    configure(config)
-  end
-
-  # return a redshift client
-  def self.connect
-    #AWS.config(@config)
-    AWS.config(:access_key_id => @config[:access_key_id],
-               :secret_access_key => @config[:secret_access_key], 
-               :logger => Logger.new($stdout)) # this ought to log elsewhere...
-    redshift = AWS::Redshift.new(config)
-    return redshift.client
   end
 
   # return dbh ready for queries
   def self.prepare
-    puts "Attempting to connect to #@config..."
+    #puts "Attempting to connect to database #{@config['database']['dbname']}..."
     begin
-      #return DBI.connect(@config[:db_name],
-      #                   @config[:db_user],
-      #                   @config[:db_pass],
-      #                   'driver' => 'org.postgresql.Driver')   
-      return PG::Connection.new(:host => @config[:host], 
-                                :port => @config[:port],
-                                :dbname => @config[:dbname],
-                                :user => @config[:user],
-                                :password => @config[:password])
+      return PG::Connection.new(:host => @config['database']['host'], 
+                                :port => @config['database']['port'],
+                                :dbname => @config['database']['dbname'],
+                                :user => @config['database']['user'],
+                                :password => @config['database']['password'])
     rescue Exception => ex
       puts "Connection failed. Error #{ex.class} happened, message is: #{ex.message}"
     end
   end
+
+  # NB the "prepare" code may have to be replaced with another means of getting database information, 
+  # probably by querying the clusters to see what is available. This will be done later when I have a better
+  # understanding
 
 end
 
