@@ -3,23 +3,18 @@ zooprism
 
 Gem for Redshift queries/management, in development.
 
-OUT OF DATE:
+As the aws-sdk gem appears not to work, this gem assumes the presence of the aws command line services, with a config file in ~/.aws/config. 
 
-To set this up, a redshift.yml file should be provided and sourced with an initialiser, thus:
-
-ZPConfig.configure_with("#{Rails.root}/config/redshift.yml")
-
-Then, every time a sidekiq job needs to query AWS or perform a query, an appropriate object can
-be created, e.g.
+Querying can be done thus:
 
 zq = ZPQuery.new
 result = zq.run_query("select * from stuff")
-...&c.
+
+Management is as follows:
 
 zm = ZPManage.new
 status = zm.describe
-...&c.
 
 These need padding out quite a lot.
 
-Before the sql gets as far as ZPQuery it should be dynamically checked in the browser to at least make sure that the users send valid sql to the server, to avoid wasting too much time (see query.rb for link).
+Before the sql gets as far as ZPQuery it should be dynamically checked in the browser to at least make sure that the users send valid sql to the server, to avoid wasting too much time (see query.rb for link).This is currently being done by OBOE.
