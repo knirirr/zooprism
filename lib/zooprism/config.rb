@@ -41,7 +41,6 @@ module ZPConfig
 
   # return a redshift client
   def self.connect
-    #AWS.config(@config)
     AWS.config(:access_key_id => @config[:access_key_id],
                :secret_access_key => @config[:secret_access_key], 
                :logger => Logger.new($stdout)) # this ought to log elsewhere...

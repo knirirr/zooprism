@@ -1,14 +1,17 @@
 # http://aws.amazon.com/sdkforruby/
 
-require 'inifile'
 require 'logger'
 require 'json'
 require 'pg'
+require 'yaml'
+require 'aws-sdk'
 
 require 'zooprism/config'
 require 'zooprism/manage'
 require 'zooprism/query'
 require 'zooprism/read'
+
+YAML::ENGINE.yamler = 'syck'
 
 =begin
 To set this up, a redshift.yml file should be provided and sourced with an initialiser, thus:
