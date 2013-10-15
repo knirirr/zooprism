@@ -5,7 +5,7 @@ class ZPQuery
 
   # http://deveiate.org/code/pg/PGconn.html
   def initialize
-    @dbh = ZPConfig.prepare
+    @dbh = ZPConfig.prepare(:ro => false)
   end
 
   def get_handle
@@ -15,30 +15,6 @@ class ZPQuery
   def close
     if !@dbh.nil?
       @dbh.finish
-    end
-  end
-
-  def test_insert
-    # users should only have read permission anyway
-    begin
-      res = @dbh.exec("insert into fruits values('banana','yellow')")
-      res = @dbh.exec("insert into fruits values('orange','green')")
-    rescue PG::Error => err
-      puts err
-    end
-  end
-
-  def test_query
-    # this still needs checking before it goes to the server - 
-    # should be done in the browser before user even gets this far, e.g.
-    # https://github.com/forward/sql-parser
-    begin
-      res = @dbh.exec("select * from fruits")
-      res.each_row do |r|
-        puts r.to_s 
-      end
-    rescue PG::Error => err
-      puts err
     end
   end
 
@@ -53,6 +29,14 @@ class ZPQuery
       puts err
     end
     return output
+  end
+
+  def copy(table,bucket,options = {})
+    options = {:delimiter => ','}.merge(options)
+    @config = ZPConfig.config
+    query = "copy #{table} from '#{bucket}' credentials 'aws_access_key_id=#{@config[:access_key_id]};aws_secret_access_key=#{@config[:secret_access_key]}' delimiter as '#{options[:delimiter]}'"
+    run_query(query)
+    #return query
   end
 
 end

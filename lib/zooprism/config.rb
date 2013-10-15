@@ -8,7 +8,9 @@ module ZPConfig
               :port => 5439,
               :dbname => "DBNAME",
               :user => "USER",
-              :password => "SECRET"
+              :password => "SECRET",
+              :ro_user => "USER",
+              :ro_password => "SECRET"
             }
 
   @valid_config_keys = @config.keys
@@ -48,18 +50,28 @@ module ZPConfig
   end
 
   # return dbh ready for queries
-  def self.prepare
+  def self.prepare(options = {})
+    options = {:ro => true}.merge(options)
     puts "Attempting to connect to #@config..."
     begin
       #return DBI.connect(@config[:db_name],
       #                   @config[:db_user],
       #                   @config[:db_pass],
       #                   'driver' => 'org.postgresql.Driver')   
-      return PG::Connection.new(:host => @config[:host], 
-                                :port => @config[:port],
-                                :dbname => @config[:dbname],
-                                :user => @config[:user],
-                                :password => @config[:password])
+      if options[:ro] == false
+        return PG::Connection.new(:host => @config[:host], 
+                                  :port => @config[:port],
+                                  :dbname => @config[:dbname],
+                                  :user => @config[:user],
+                                  :password => @config[:password])
+      else
+        return PG::Connection.new(:host => @config[:host], 
+                                  :port => @config[:port],
+                                  :dbname => @config[:dbname],
+                                  :user => @config[:ro_user],
+                                  :password => @config[:ro_password])
+
+      end
     rescue Exception => ex
       puts "Connection failed. Error #{ex.class} happened, message is: #{ex.message}"
     end

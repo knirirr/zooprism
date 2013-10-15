@@ -9,6 +9,7 @@ Gem::Specification.new do |s|
   s.files       = ["lib/zooprism.rb",
                    "lib/zooprism/manage.rb",
                    "lib/zooprism/query.rb",
+                   "lib/zooprism/read.rb",
                    "lib/zooprism/config.rb"]
   s.homepage    = 'http://zooniverse.org'
   s.license     = 'Apache'

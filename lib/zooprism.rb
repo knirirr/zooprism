@@ -8,6 +8,7 @@ require 'pg'
 require 'zooprism/config'
 require 'zooprism/manage'
 require 'zooprism/query'
+require 'zooprism/read'
 
 =begin
 To set this up, a redshift.yml file should be provided and sourced with an initialiser, thus:
