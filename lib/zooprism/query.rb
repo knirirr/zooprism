@@ -34,7 +34,7 @@ class ZPQuery
   def copy(table,bucket,options = {})
     options = {:delimiter => ','}.merge(options)
     @config = ZPConfig.config
-    query = "copy #{table} from '#{bucket}' credentials 'aws_access_key_id=#{@config[:access_key_id]};aws_secret_access_key=#{@config[:secret_access_key]}' delimiter as '#{options[:delimiter]}'"
+    query = "copy #{table} from '#{bucket}' credentials 'aws_access_key_id=#{@config[:access_key_id]};aws_secret_access_key=#{@config[:secret_access_key]}' delimiter as '#{options[:delimiter]}' null as '#{options[:null]}'"
     run_query(query)
     #return query
   end
