@@ -1,0 +1,9 @@
+access_key_id: your_access_key
+secret_access_key: your_secret_access_key
+host: dbname.gibberish.region.amazonaws.com
+port: 5439
+dbname: db_name
+user: rw_user_name
+password: rw_user_password
+ro_user: ro_user_name
+ro_password: ro_user_password
