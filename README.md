@@ -1,7 +1,7 @@
 zooprism
 ========
 
-Gem for Redshift queries/management, in development.
+Gem for Redshift queries/management, almost certainly abandoned now.
 
 As the aws-sdk gem appears not to work, this gem assumes the presence of the aws command line services, with a config file in ~/.aws/config. 
 
